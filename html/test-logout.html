@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Test Logout</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 50px;
+        background: #f0f0f0;
+      }
+      button {
+        padding: 10px 20px;
+        margin: 10px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+      }
+      .success {
+        background: #4caf50;
+        color: white;
+      }
+      .danger {
+        background: #f44336;
+        color: white;
+      }
+      .info {
+        background: #2196f3;
+        color: white;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>🔧 Test Logout System</h1>
+
+    <div id="status"></div>
+
+    <button class="info" onclick="checkSession()">Kiểm tra Session</button>
+    <button class="success" onclick="fakeLogin()">Fake Login</button>
+    <button id="logout-btn" class="danger">Test Logout</button>
+
+    <script type="module">
+      import { userSession } from "./js/userSession.js"
+      import { setupLogoutButton } from "./js/logout.js"
+
+      // Setup logout button
+      setupLogoutButton("Test logout - Bạn có chắc?")
+
+      // Global functions
+      window.checkSession = function () {
+        const user = userSession.getCurrentUser()
+        const status = document.getElementById("status")
+
+        if (user) {
+          status.innerHTML = `
+                    <div style="background: #dff0d8; padding: 10px; margin: 10px 0; border-radius: 5px;">
+                        ✅ <strong>Đã đăng nhập:</strong><br>
+                        Email: ${user.email}<br>
+                        Role: ${user.role_id === 1 ? "Admin" : "User"}<br>
+                        Login Time: ${new Date(user.loginTime).toLocaleString(
+                          "vi-VN",
+                        )}
+                    </div>
+                `
+        } else {
+          status.innerHTML = `
+                    <div style="background: #f2dede; padding: 10px; margin: 10px 0; border-radius: 5px;">
+                        ❌ <strong>Chưa đăng nhập</strong>
+                    </div>
+                `
+        }
+      }
+
+      window.fakeLogin = function () {
+        const fakeUser = {
+          uid: "test-uid-123",
+          email: "test@example.com",
+          displayName: "Test User",
+          emailVerified: true,
+        }
+
+        userSession.saveSession(fakeUser, { role_id: 2, balance: 100000 })
+        alert("Fake login thành công!")
+        checkSession()
+      }
+
+      // Auto check session on load
+      checkSession()
+    </script>
+  </body>
+</html>

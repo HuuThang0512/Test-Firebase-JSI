@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Upload Presets</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .preset-btn {
+            background: #2196F3;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+            font-size: 14px;
+        }
+        .preset-btn:hover {
+            background: #1976D2;
+        }
+        .upload-btn {
+            background: #4CAF50;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+        }
+        .upload-btn:hover {
+            background: #45a049;
+        }
+        .upload-btn:disabled {
+            background: #cccccc;
+            cursor: not-allowed;
+        }
+        .preview-image {
+            max-width: 300px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        .status {
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+        }
+        .status.success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        .status.error {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        .status.loading {
+            background: #d1ecf1;
+            border: 1px solid #bee5eb;
+            color: #0c5460;
+        }
+        .debug-info {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+            font-family: monospace;
+            font-size: 12px;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🧪 Test Upload Presets</h1>
+        
+        <div>
+            <h3>Chọn Upload Preset:</h3>
+            <button class="preset-btn" onclick="setPreset('ml_default')">ml_default</button>
+            <button class="preset-btn" onclick="setPreset('food_images')">food_images</button>
+            <button class="preset-btn" onclick="setPreset('sample')">sample</button>
+            <button class="preset-btn" onclick="setPreset('test')">test</button>
+        </div>
+
+        <div>
+            <p><strong>Preset hiện tại:</strong> <span id="current-preset">ml_default</span></p>
+        </div>
+
+        <div>
+            <input type="file" id="file-input" accept="image/*" style="display: none;">
+            <button class="upload-btn" onclick="document.getElementById('file-input').click()">
+                📁 Chọn Ảnh
+            </button>
+            <button id="upload-btn" class="upload-btn" style="display: none;">
+                ☁️ Upload lên Cloudinary
+            </button>
+        </div>
+
+        <div>
+            <img id="preview" class="preview-image" style="display: none;">
+        </div>
+
+        <div id="status"></div>
+        <div id="debug-info" class="debug-info"></div>
+    </div>
+
+    <script>
+        let currentPreset = 'ml_default';
+
+        // Set preset
+        function setPreset(preset) {
+            currentPreset = preset;
+            document.getElementById('current-preset').textContent = preset;
+            addDebugInfo(`Đã chọn preset: ${preset}`);
+        }
+
+        // Debug info
+        function addDebugInfo(message) {
+            const debugDiv = document.getElementById('debug-info');
+            const timestamp = new Date().toLocaleTimeString();
+            debugDiv.textContent += `[${timestamp}] ${message}\n`;
+        }
+
+        // Upload function với preset tùy chọn
+        async function uploadToCloudinary(file, preset) {
+            try {
+                addDebugInfo(`Bắt đầu upload file: ${file.name} (${file.size} bytes)`);
+                addDebugInfo(`Sử dụng preset: ${preset}`);
+                
+                const formData = new FormData();
+                formData.append('file', file);
+                formData.append('upload_preset', preset);
+                
+                const url = `https://api.cloudinary.com/v1_1/dcadizjkf/image/upload`;
+                addDebugInfo(`Upload URL: ${url}`);
+                
+                const response = await fetch(url, {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                addDebugInfo(`Response status: ${response.status}`);
+                addDebugInfo(`Response ok: ${response.ok}`);
+                
+                const result = await response.json();
+                addDebugInfo(`Response result: ${JSON.stringify(result, null, 2)}`);
+                
+                if (result.secure_url) {
+                    addDebugInfo(`✅ Upload thành công: ${result.secure_url}`);
+                    return result.secure_url;
+                } else {
+                    addDebugInfo(`❌ Upload thất bại: ${JSON.stringify(result)}`);
+                    throw new Error(`Upload thất bại: ${result.error?.message || 'Không rõ lỗi'}`);
+                }
+            } catch (error) {
+                addDebugInfo(`❌ Lỗi upload: ${error.message}`);
+                console.error('Lỗi upload chi tiết:', error);
+                throw error;
+            }
+        }
+
+        // Show status
+        function showStatus(message, type) {
+            const statusDiv = document.getElementById('status');
+            statusDiv.innerHTML = `<div class="status ${type}">${message}</div>`;
+        }
+
+        // Event listeners
+        document.addEventListener('DOMContentLoaded', () => {
+            addDebugInfo('Trang đã load, sẵn sàng test upload presets');
+            
+            const fileInput = document.getElementById('file-input');
+            const uploadBtn = document.getElementById('upload-btn');
+            const preview = document.getElementById('preview');
+
+            // Preview image
+            fileInput.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    addDebugInfo(`File được chọn: ${file.name} (${file.type}, ${file.size} bytes)`);
+                    
+                    if (!file.type.startsWith('image/')) {
+                        showStatus('Vui lòng chọn file ảnh!', 'error');
+                        addDebugInfo('❌ File không phải ảnh');
+                        fileInput.value = '';
+                        return;
+                    }
+                    
+                    if (file.size > 10 * 1024 * 1024) {
+                        showStatus('File quá lớn! Vui lòng chọn file nhỏ hơn 10MB.', 'error');
+                        addDebugInfo('❌ File quá lớn');
+                        fileInput.value = '';
+                        return;
+                    }
+                    
+                    addDebugInfo('✅ File hợp lệ, hiển thị preview');
+                    
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        preview.src = e.target.result;
+                        preview.style.display = 'block';
+                        uploadBtn.style.display = 'inline-block';
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            // Upload
+            uploadBtn.addEventListener('click', async () => {
+                const file = fileInput.files[0];
+                if (!file) {
+                    showStatus('Vui lòng chọn file ảnh trước!', 'error');
+                    addDebugInfo('❌ Không có file để upload');
+                    return;
+                }
+
+                uploadBtn.disabled = true;
+                uploadBtn.textContent = '🔄 Đang upload...';
+                showStatus(`Đang upload ảnh lên Cloudinary với preset: ${currentPreset}...`, 'loading');
+                addDebugInfo(`🔄 Bắt đầu quá trình upload với preset: ${currentPreset}`);
+
+                try {
+                    const imageUrl = await uploadToCloudinary(file, currentPreset);
+                    
+                    showStatus(`
+                        <div class="status success">
+                            <h4>✅ Upload thành công!</h4>
+                            <p><strong>Preset:</strong> ${currentPreset}</p>
+                            <p><strong>URL:</strong> <a href="${imageUrl}" target="_blank">${imageUrl}</a></p>
+                        </div>
+                    `, 'success');
+                    
+                    addDebugInfo(`✅ Upload hoàn tất: ${imageUrl}`);
+                    
+                } catch (error) {
+                    showStatus(`❌ Lỗi upload: ${error.message}`, 'error');
+                    addDebugInfo(`❌ Upload thất bại: ${error.message}`);
+                } finally {
+                    uploadBtn.disabled = false;
+                    uploadBtn.textContent = '☁️ Upload lên Cloudinary';
+                }
+            });
+        });
+    </script>
+</body>
+</html> 

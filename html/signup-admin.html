@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Đăng ký Admin</title>
+    <link rel="stylesheet" href="../css/auth.css" />
+  </head>
+  <body class="auth-body">
+    <div class="auth-container">
+      <h1 class="auth-title">👑 Đăng ký Admin</h1>
+      <form class="auth-form">
+        <input
+          type="email"
+          name="username"
+          placeholder="Email Admin"
+          class="auth-input"
+          required
+        />
+        <input
+          type="password"
+          name="password"
+          placeholder="Mật khẩu"
+          class="auth-input"
+          required
+        />
+        <input
+          type="password"
+          name="confirmPassword"
+          placeholder="Xác nhận mật khẩu"
+          class="auth-input"
+          required
+        />
+        <input
+          type="text"
+          name="adminCode"
+          placeholder="Mã Admin (admin123)"
+          class="auth-input"
+          required
+        />
+        <button type="button" class="auth-btn" id="signup-btn">
+          Đăng ký Admin
+        </button>
+      </form>
+      <div class="auth-link-container">
+        <a href="signup.html" class="auth-link">Đăng ký User thường</a>
+        <a href="login.html" class="auth-link">Đăng nhập</a>
+      </div>
+    </div>
+    <script type="module" src="../js/signupAdmin.js"></script>
+  </body>
+</html>

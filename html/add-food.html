@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Thêm Món Ăn</title>
+    <link rel="stylesheet" href="../css/auth.css" />
+  </head>
+  <body class="auth-body">
+    <div class="auth-container" style="max-width: 500px">
+      <h1 class="auth-title">🍔 Thêm Món Ăn</h1>
+
+      <form class="auth-form" id="food-form">
+        <input
+          type="text"
+          name="name"
+          placeholder="Tên món ăn *"
+          class="auth-input"
+          required
+        />
+        <textarea
+          name="description"
+          placeholder="Mô tả món ăn"
+          class="auth-input"
+          rows="3"
+        ></textarea>
+        <input
+          type="number"
+          name="price"
+          placeholder="Giá (VNĐ) *"
+          class="auth-input"
+          required
+          min="0"
+        />
+        <input
+          type="text"
+          name="category"
+          placeholder="Danh mục (VD: Món chính, Đồ uống)"
+          class="auth-input"
+        />
+        <input
+          type="url"
+          name="imageUrl"
+          placeholder="Link hình ảnh"
+          class="auth-input"
+        />
+        <input
+          type="number"
+          name="cookingTime"
+          placeholder="Thời gian nấu (phút)"
+          class="auth-input"
+          min="0"
+        />
+
+        <label
+          style="
+            color: white;
+            margin: 10px 0;
+            display: flex;
+            align-items: center;
+          "
+        >
+          <input type="checkbox" name="isSpicy" style="margin-right: 10px" />
+          Món ăn cay
+        </label>
+
+        <label
+          style="
+            color: white;
+            margin: 10px 0;
+            display: flex;
+            align-items: center;
+          "
+        >
+          <input
+            type="checkbox"
+            name="isVegetarian"
+            style="margin-right: 10px"
+          />
+          Món chay
+        </label>
+
+        <button type="submit" class="auth-btn">Thêm Món Ăn</button>
+      </form>
+
+      <div class="auth-link-container">
+        <a href="admin.html" class="auth-link">← Quay lại Admin</a>
+        <a href="manage-foods.html" class="auth-link">Quản lý món ăn</a>
+      </div>
+    </div>
+
+    <script type="module" src="../js/addFood.js"></script>
+  </body>
+</html>

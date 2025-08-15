@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Quản lý Món Ăn</title>
+    <link rel="stylesheet" href="../css/auth.css" />
+    <style>
+      .manage-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+        color: white;
+      }
+      .food-table {
+        width: 100%;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+        backdrop-filter: blur(8px);
+        border-collapse: collapse;
+        margin-top: 20px;
+      }
+      .food-table th,
+      .food-table td {
+        padding: 12px;
+        text-align: left;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+      }
+      .food-table th {
+        background: rgba(255, 255, 255, 0.2);
+        font-weight: bold;
+      }
+      .food-image {
+        width: 60px;
+        height: 60px;
+        object-fit: cover;
+        border-radius: 8px;
+      }
+      .action-btn {
+        padding: 5px 10px;
+        margin: 2px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 12px;
+      }
+      .edit-btn {
+        background: #4caf50;
+        color: white;
+      }
+      .delete-btn {
+        background: #f44336;
+        color: white;
+      }
+      .status-active {
+        color: #4caf50;
+      }
+      .status-inactive {
+        color: #f44336;
+      }
+    </style>
+  </head>
+  <body class="home-body">
+    <div class="manage-container">
+      <h1>📋 Quản lý Món Ăn</h1>
+
+      <div style="margin: 20px 0">
+        <button class="auth-btn" onclick="window.location.href='add-food.html'">
+          ➕ Thêm món ăn mới
+        </button>
+        <button class="auth-btn" onclick="loadFoods()">🔄 Tải lại</button>
+        <a href="admin.html" class="auth-link" style="margin-left: 20px"
+          >← Quay lại Admin</a
+        >
+      </div>
+
+      <div id="loading" style="text-align: center">
+        Đang tải danh sách món ăn...
+      </div>
+
+      <div id="foods-container" style="display: none">
+        <p id="foods-count"></p>
+        <table class="food-table" id="foods-table">
+          <thead>
+            <tr>
+              <th>Hình</th>
+              <th>Tên món</th>
+              <th>Giá</th>
+              <th>Danh mục</th>
+              <th>Trạng thái</th>
+              <th>Thao tác</th>
+            </tr>
+          </thead>
+          <tbody id="foods-tbody"></tbody>
+        </table>
+      </div>
+
+      <div
+        id="no-foods"
+        style="display: none; text-align: center; margin: 50px 0"
+      >
+        <h3>📭 Chưa có món ăn nào</h3>
+        <p>Hãy thêm món ăn đầu tiên!</p>
+        <button class="auth-btn" onclick="window.location.href='add-food.html'">
+          ➕ Thêm món ăn
+        </button>
+      </div>
+    </div>
+
+    <script type="module" src="../js/manageFoods.js"></script>
+  </body>
+</html>

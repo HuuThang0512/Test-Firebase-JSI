@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Danh Sách Món Ăn</title>
+    <link rel="stylesheet" href="../css/auth.css" />
+    <style>
+      .foods-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+      .food-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 20px;
+        margin-top: 20px;
+      }
+      .food-card {
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 15px;
+        padding: 20px;
+        color: white;
+        backdrop-filter: blur(8px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+      }
+      .food-image {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+        border-radius: 10px;
+        margin-bottom: 15px;
+      }
+      .food-name {
+        font-size: 1.3rem;
+        font-weight: bold;
+        margin-bottom: 10px;
+      }
+      .food-price {
+        font-size: 1.2rem;
+        color: #4caf50;
+        font-weight: bold;
+        margin: 10px 0;
+      }
+      .food-category {
+        background: rgba(102, 126, 234, 0.3);
+        padding: 5px 10px;
+        border-radius: 15px;
+        font-size: 0.8rem;
+        display: inline-block;
+        margin: 5px 0;
+      }
+      .food-tags {
+        margin: 10px 0;
+      }
+      .tag {
+        background: rgba(255, 255, 255, 0.2);
+        padding: 3px 8px;
+        border-radius: 10px;
+        font-size: 0.7rem;
+        margin-right: 5px;
+        display: inline-block;
+      }
+      .order-btn {
+        width: 100%;
+        padding: 10px;
+        background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+        border: none;
+        border-radius: 8px;
+        color: white;
+        font-weight: bold;
+        cursor: pointer;
+        margin-top: 10px;
+      }
+      .order-btn:hover {
+        transform: translateY(-2px);
+      }
+    </style>
+  </head>
+  <body class="home-body">
+    <div class="foods-container">
+      <h1 style="color: white; text-align: center">🍽️ Danh Sách Món Ăn</h1>
+
+      <div style="text-align: center; margin: 20px 0">
+        <a href="dashboard.html" class="auth-link">← Quay lại Dashboard</a>
+      </div>
+
+      <div id="loading" style="text-align: center; color: white">
+        Đang tải món ăn...
+      </div>
+
+      <div id="foods-grid" class="food-grid" style="display: none"></div>
+
+      <div
+        id="no-foods"
+        style="display: none; text-align: center; color: white; margin: 50px 0"
+      >
+        <h3>Chưa có món ăn nào</h3>
+        <p>Vui lòng quay lại sau!</p>
+      </div>
+    </div>
+
+    <script type="module" src="../js/foods.js"></script>
+  </body>
+</html>

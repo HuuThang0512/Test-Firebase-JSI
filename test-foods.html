@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Test Foods</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 50px;
+        background: #f0f0f0;
+      }
+      .container {
+        max-width: 800px;
+        margin: 0 auto;
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+      button {
+        padding: 10px 20px;
+        margin: 10px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+      }
+      .success {
+        background: #4caf50;
+        color: white;
+      }
+      .info {
+        background: #2196f3;
+        color: white;
+      }
+      .foods-list {
+        margin-top: 20px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        padding: 15px;
+        max-height: 400px;
+        overflow-y: auto;
+      }
+      .food-item {
+        border-bottom: 1px solid #eee;
+        padding: 10px 0;
+      }
+      .food-item:last-child {
+        border-bottom: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>🧪 Test Foods Collection</h1>
+
+      <button class="success" onclick="addSampleFood()">
+        ➕ Thêm món ăn mẫu
+      </button>
+      <button class="info" onclick="loadFoods()">
+        🔄 Load danh sách món ăn
+      </button>
+
+      <div id="status"></div>
+      <div id="foods-list" class="foods-list" style="display: none"></div>
+    </div>
+
+    <script type="module">
+      import { addFood, getAllFoods } from "./js/firebase/foods.js"
+
+      // Thêm món ăn mẫu
+      window.addSampleFood = async function () {
+        const sampleFoods = [
+          {
+            name: "Phở Bò",
+            description: "Phở bò truyền thống Hà Nội với nước dùng đậm đà",
+            price: 45000,
+            category: "Món chính",
+            imageUrl:
+              "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400",
+            cookingTime: 15,
+            isSpicy: false,
+            isVegetarian: false,
+          },
+          {
+            name: "Bánh Mì Thịt Nướng",
+            description: "Bánh mì giòn với thịt nướng thơm ngon",
+            price: 25000,
+            category: "Đồ ăn nhanh",
+            imageUrl:
+              "https://images.unsplash.com/photo-1558030006-450675393462?w=400",
+            cookingTime: 5,
+            isSpicy: false,
+            isVegetarian: false,
+          },
+          {
+            name: "Cà Phê Sữa Đá",
+            description: "Cà phê truyền thống Việt Nam",
+            price: 15000,
+            category: "Đồ uống",
+            imageUrl:
+              "https://images.unsplash.com/photo-1516511584411-1cec8b8b3b9b?w=400",
+            cookingTime: 2,
+            isSpicy: false,
+            isVegetarian: true,
+          },
+        ]
+
+        const status = document.getElementById("status")
+        status.innerHTML = '<p style="color: blue;">Đang thêm món ăn mẫu...</p>'
+
+        try {
+          const randomFood =
+            sampleFoods[Math.floor(Math.random() * sampleFoods.length)]
+          const result = await addFood(randomFood)
+
+          status.innerHTML = `
+                    <p style="color: green;">✅ Thêm thành công: ${randomFood.name}</p>
+                    <small>ID: ${result.id}</small>
+                `
+
+          setTimeout(() => loadFoods(), 500)
+        } catch (error) {
+          status.innerHTML = `<p style="color: red;">❌ Lỗi: ${error.message}</p>`
+          console.error("Error:", error)
+        }
+      }
+
+      // Load danh sách món ăn
+      window.loadFoods = async function () {
+        const status = document.getElementById("status")
+        const foodsList = document.getElementById("foods-list")
+
+        status.innerHTML = '<p style="color: blue;">Đang load dữ liệu...</p>'
+
+        try {
+          const foods = await getAllFoods()
+
+          if (foods.length === 0) {
+            status.innerHTML =
+              '<p style="color: orange;">📭 Chưa có món ăn nào. Hãy thêm món ăn mẫu!</p>'
+            foodsList.style.display = "none"
+            return
+          }
+
+          status.innerHTML = `<p style="color: green;">✅ Tìm thấy ${foods.length} món ăn</p>`
+
+          foodsList.innerHTML = `
+                    <h3>📋 Danh sách món ăn (${foods.length})</h3>
+                    ${foods
+                      .map(
+                        (food) => `
+                        <div class="food-item">
+                            <strong>${
+                              food.name
+                            }</strong> - ${food.price.toLocaleString(
+                          "vi-VN",
+                        )} VNĐ
+                            <br><small>${
+                              food.description || "Không có mô tả"
+                            }</small>
+                            <br><small>Danh mục: ${
+                              food.category || "Khác"
+                            } | Trạng thái: ${
+                          food.isActive ? "✅ Hoạt động" : "❌ Tạm ngưng"
+                        }</small>
+                            <br><small>ID: ${food.id}</small>
+                        </div>
+                    `,
+                      )
+                      .join("")}
+                `
+          foodsList.style.display = "block"
+        } catch (error) {
+          status.innerHTML = `<p style="color: red;">❌ Lỗi load dữ liệu: ${error.message}</p>`
+          console.error("Error:", error)
+        }
+      }
+
+      // Auto load on page load
+      loadFoods()
+    </script>
+  </body>
+</html>
